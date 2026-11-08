@@ -21,11 +21,38 @@ The server reads `HOST` and `PORT` from the process environment (defaults: loopb
 
 ## Architecture and features
 
-```text
-Browser -> public/app.js -> /api/tasks -> server/api.js -> in-memory Map
-API client -------------> /api/summary ----------------> same Map
-server/index.js starts the server and serves public assets.
+### Full-Stack Application Architecture
+
+```mermaid
+flowchart TB
+    subgraph client["Browser"]
+        board["Kanban frontend<br/>HTML + CSS"]
+        js["Vanilla JavaScript<br/>public/app.js"]
+        board <--> js
+    end
+    subgraph backend["Node.js application"]
+        http["HTTP server<br/>server/index.js"]
+        rest["REST API<br/>server/api.js"]
+        tasks[("In-memory tasks<br/>Map · resets on restart")]
+        http --> rest
+        rest <-->|"Read / write"| tasks
+    end
+    external["API client"]
+    js -->|"HTTP · GET / POST / PATCH / DELETE<br/>/api/tasks and /api/tasks/:id"| http
+    http -->|"JSON responses"| js
+    http -->|"HTML / CSS / JavaScript"| board
+    external -->|"HTTP GET<br/>/api/summary · /api/health"| http
+    http -->|"JSON responses"| external
+
+    classDef ui fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e,stroke-width:2px
+    classDef service fill:#ede9fe,stroke:#6d28d9,color:#3b0764,stroke-width:2px
+    classDef data fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:2px
+    class board,js,external ui
+    class http,rest service
+    class tasks data
 ```
+
+`server/index.js` starts the HTTP server and serves public assets through the handler in `server/api.js`.
 
 Create tasks with title, description, owner and priority; move them between Backlog, In progress and Done; delete tasks; and search across title, description and owner. The labelled priority select combines with search using AND. Column counts reflect matching cards; sprint metrics remain unfiltered. The dashboard computes metrics from `/api/tasks`, rather than calling `/api/summary`.
 
@@ -47,6 +74,42 @@ Fresh seed summary:
 Counts change after mutations. Other summary methods return 405 with `Allow: GET`. Inputs are validated, JSON bodies are bounded, static serving is restricted, and task text uses `textContent`.
 
 ## Concord MCP integration
+
+### Concord MCP Multi-Agent Collaboration Architecture
+
+**The coordination layer is the focus of this demonstration: both agents used shared Concord task state, with separate implementation scopes.**
+
+```mermaid
+flowchart TB
+    subgraph agents["Two coding clients · one project"]
+        claude["Claude Code · Frontend<br/>public/app.js + public/styles.css"]
+        codex["OpenAI Codex · Backend<br/>server/api.js + test/api.test.js"]
+    end
+    subgraph coordination["Concord MCP · shared coordination"]
+        claims["Task ownership + file claims<br/>Overlap warnings"]
+        state[("Shared workspace state<br/>Contracts · decisions · handoffs")]
+        claims --> state
+    end
+    subgraph evidence["Review and validation evidence"]
+        reviews["Independent cross-agent code reviews<br/>Each agent reviewed the other's code"]
+        handoffs["Two implementation handoffs<br/>review_ready"]
+        tests["Finalization: 14 passing tests<br/>10 API + 4 frontend behavioral"]
+        reviews --> tests
+    end
+    claude -->|"Claim / inspect / record"| claims
+    codex -->|"Claim / inspect / record"| claims
+    state -->|"Read task context"| reviews
+    state --> handoffs
+
+    classDef agent fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e,stroke-width:2px
+    classDef shared fill:#ede9fe,stroke:#6d28d9,color:#3b0764,stroke-width:3px
+    classDef verified fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:2px
+    class claude,codex agent
+    class claims,state shared
+    class reviews,handoffs,tests verified
+```
+
+Arrows show shared-state workflow, not direct agent messaging or automated review/test orchestration by Concord. Direct agent-to-agent messaging was not tested. Tests were run by the agents; the 14-test result includes the later finalization phase.
 
 Concord records file claims, overlap warnings, decisions and evidence-bearing handoffs through five workflow tools: `start_work`, `inspect_work`, `update_work`, `transfer_work`, and `finish_work`. Enforcement depends on client configuration.
 
