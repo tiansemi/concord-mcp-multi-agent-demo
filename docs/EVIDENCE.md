@@ -1,6 +1,6 @@
 # Evidence — first Concord coordination test (6 Nov 2026)
 
-Environment: Windows 11, Concord MCP 0.20.0 (installed with `--ignore-scripts` into `.sandbox-tools/`), Codex v0.167.0, Claude Code, Node.js 22. Telemetry disabled through `CONCORD_TELEMETRY_DISABLED=1` in the generated configs (not verified at network level). Local paths are redacted as `<repo>`.
+Environment: Windows 11, Concord MCP 0.20.0 (installed with `--ignore-scripts` into `.sandbox-tools/`), Codex v0.167.0, Claude Code. The Node.js version used for this Windows run was not captured in the retained evidence; the earlier Linux baseline records v22.16.0 and must not be treated as the Windows version. Telemetry disabled through `CONCORD_TELEMETRY_DISABLED=1` in the generated configs (not verified at network level). Local paths are redacted as `<repo>`.
 
 ## Agents and tasks
 
@@ -34,7 +34,7 @@ doctor: tasks: 3, events: 16; start_work and finish_work used on all three tasks
 
 `concord check public/app.js` after completion: `OK: none of the 1 file(s) overlap another active task.`
 
-## Tests
+## Historical tests (6 November 2026)
 
 `npm run check` passed. `npm test`: 10 tests, 10 pass, 0 fail (including three new `/api/summary` tests). Codex's own first run failed with `spawn EPERM` inside its sandbox and was re-run with approval. A separate re-run by the author's assistant also gave 10/10.
 
@@ -50,12 +50,23 @@ Backend (`sprint-summary-api-backend`): `GET /api/summary` returns `{total, back
 
 - **Codex on `frontend-priority-filter`: PASS.** Priority matching and AND-combination with the trimmed, case-insensitive search are correct; column counts follow the filter while sprint metrics stay unfiltered; content uses `textContent`; the native select has an explicit label and visible focus; priority values match backend validation. Low finding: no automated frontend tests (suggested: browser tests for combined filter/search, reset, keyboard, narrow layouts). Codex did not visually verify the responsive layout. It ran `npm run check` and `npm test` (10/10).
 - **Claude Code on `sprint-summary-api-backend`: PASS.** `GET /api/summary` recomputes counts on every request through the shared `json()` helper; the summary tests check consistency after every create, status change, rejected update and delete; non-GET methods return 405 with `Allow: GET`; existing routes unchanged; no user input, so no injection surface. Low findings: (1) a task with an unsupported status counts in `total` but in no bucket (only reachable through custom `initialTasks`); (2) two tests depend on run order in a shared server instance; (3) the 405 test covers POST only. Info: the frontend does not call `/api/summary`, and storage is in memory without authentication, by design. It ran `npm test` itself (10/10).
-- Neither reviewer modified files, created tasks, committed, or altered the `review_ready` tasks. The findings were not fixed; they are listed here as known limitations.
+- Neither reviewer modified files, created tasks, committed, or altered the `review_ready` tasks. At the time of those reviews, the findings had not been fixed. The finalization update below records which were subsequently addressed.
 
-## Limits of this evidence
+## Finalization update (8 November 2026)
+
+The separate `publication-finalization` task reached `review_ready` (v2). The two original implementation tasks remained `review_ready` (v2), unchanged.
+
+- API tests now start and close a fresh server per test, removing shared-collection order dependencies.
+- Four dependency-free frontend behavioral tests execute the shipped script using a minimal DOM substitute. They cover priority options, search intersection and resets, empty states, counts, metrics and text rendering. These are not real-browser layout, keyboard or screen-reader tests.
+- `npm.cmd run check` passed; `npm.cmd test` passed **14/14** (10 API integration tests plus 4 frontend tests). A targeted API subset passed 3/3 after an approved rerun following sandbox `spawn EPERM`.
+- The original **7/7** result in [BASELINE-TESTS.md](BASELINE-TESTS.md) is the pre-collaboration Linux baseline; **10/10** above is the Windows implementation/review snapshot; **14/14** is the finalization state.
+- The unsupported custom initial status limitation and POST-only coverage of summary method rejection remain. Native browser/accessibility automation and direct agent messaging remain unvalidated.
+- During the subsequent documentation consistency review, `node --version` reported **v26.13.0**. This observation does not establish the Node.js version used in either earlier Windows test run.
+
+## Limits of the historical coordination evidence
 
 - Messaging between the agents was not demonstrated: `Live prompting` shows both agents `unreachable` and `concord messages` returns "No messages". Contract and decisions are shared through task state and review packets only.
 - Codex identity is operator-set, not detected from its session.
 - The overlap is shown by Codex's report and the persisted handoff, not by a captured `start_work` response.
-- The folder was not a git repository during the test, so there is no `git diff --stat`.
-- One machine, one run; no repeat.
+- The folder was not a git repository during the original coordination test, so that run has no `git diff --stat`. A GitHub repository was created later; this historical limitation does not describe the current checkout.
+- One Windows coordination experiment; subsequent test reruns and finalization are not independent repetitions of the multi-agent experiment.

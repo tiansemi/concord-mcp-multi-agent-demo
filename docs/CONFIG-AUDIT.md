@@ -55,7 +55,7 @@ Get-Content .\CLAUDE.md -ErrorAction SilentlyContinue
 Get-Content .\AGENTS.md -ErrorAction SilentlyContinue
 ```
 
-The script itself has **not** been run in the user's Windows environment. Do not interpret the setup audit as proof of Claude↔Codex coordination.
+Historical status: this audit began as a pre-installation review. The isolated setup script was subsequently executed in the Windows environment for the 6 November 2026 demonstration. Local Concord tooling and MCP configurations were created, and both clients used the shared workspace; see [execution evidence](EVIDENCE.md). This establishes that local setup and shared-state coordination were exercised, not complete isolation or live messaging. Direct agent-to-agent messaging was not tested because endpoints were unreachable. Telemetry settings were configured but not verified at network level.
 
 Upstream references:
 

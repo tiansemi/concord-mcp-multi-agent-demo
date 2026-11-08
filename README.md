@@ -1,4 +1,4 @@
-﻿# Sprint Board — full-stack collaboration demo
+# Sprint Board — full-stack collaboration demo
 
 A Kanban application prepared for an Entry-Level Full Stack Developer application, demonstrating a JavaScript frontend, a REST API, automated tests, and scoped Claude Code/Codex collaboration through Concord MCP.
 
@@ -71,7 +71,9 @@ npm test
 
 Windows equivalents: `npm.cmd run check` and `npm.cmd test`.
 
-Finalization on 8 November 2026: syntax check passed; **14 tests passed, 0 failed**: 10 API integration tests and 4 frontend behavioral tests. No dependencies were added.
+Historical progression: the Linux baseline passed 7 tests; the executed Windows multi-agent implementation and reviews passed 10 tests. The Windows setup script was executed for that experiment. See [historical and final evidence](docs/EVIDENCE.md).
+
+Finalization on 8 November 2026: syntax check passed; **14 tests passed, 0 failed**: 10 API integration tests and 4 frontend behavioral tests. No dependencies were added. The Linux baseline records Node.js v22.16.0; the retained evidence does not establish the Node.js version for the Windows experiment or finalization. A later documentation-review check reported v26.13.0, which is not evidence of the earlier runtime.
 
 | Evidence | Scope |
 | --- | --- |
@@ -103,4 +105,4 @@ Optional setup requires network access. `npm start` and `npm test` install nothi
 
 This is a local demo: data resets on restart, authentication and persistence are absent, and the default binding is loopback. Custom `initialTasks` with unsupported statuses count toward summary `total` but no supported bucket. Unsupported summary methods are implemented generically; tests currently exercise POST. Do not store personal, confidential or employer data here.
 
-No publication or commits are performed during finalization. The package declares MIT licensing.
+The finalization phase performed no commits or publication; the repository was published afterward. The subsequent documentation consistency corrections are committed separately. The package declares MIT licensing.
