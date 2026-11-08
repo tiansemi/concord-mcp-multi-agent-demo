@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#101622" />
+  <title>Sprint Board · Multi-agent demo</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <div class="logo"><span class="logo-mark">◇</span><span>flow<span class="logo-accent">board</span></span></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Views">
+        <a href="#board" class="nav-item active" aria-current="page"><span class="nav-icon">▦</span> Board <span class="nav-shortcut">⌘1</span></a>
+        <a href="#activity" class="nav-item" id="activity-link"><span class="nav-icon">◷</span> Activity <span class="nav-badge">Live</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note"><span class="status-pulse"></span> Local development<br/><span>Data resets on restart</span></div>
+        <div class="user"><span class="avatar">FS</span><div><strong>Full-stack demo</strong><small>Concord MCP candidate project</small></div></div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="board">
+      <header class="topbar">
+        <div class="breadcrumbs">Workspace <span>/</span> Projects <span>/</span> <strong>Product sprint</strong></div>
+        <span class="top-pill"><span class="status-pulse"></span> Demo environment</span>
+      </header>
+
+      <div class="content">
+        <section class="page-intro">
+          <div>
+            <div class="eyebrow">SPRINT OVERVIEW <span class="divider-dot">·</span> WEEK 45</div>
+            <h1>Product sprint <span class="wave">✳</span></h1>
+            <p>Plan the work, track the progress, and ship together.</p>
+          </div>
+          <button id="new-task-button" class="button-primary"><span>＋</span> New task</button>
+        </section>
+
+        <section class="metrics" aria-label="Sprint metrics">
+          <div class="metric"><span>Total tasks</span><div class="metric-val" id="total-count">—</div><small>Across all stages</small></div>
+          <div class="metric"><span>In progress</span><div class="metric-val" id="progress-count">—</div><small>Active work items</small></div>
+          <div class="metric"><span>Completed</span><div class="metric-val" id="done-count">—</div><small>Ready to ship</small></div>
+          <div class="metric metric-progress"><span>Sprint completion</span><div class="metric-progress-row"><div class="metric-val" id="percent-count">—</div><div class="progress-circle" id="progress-circle"><span>✓</span></div></div><small>Keep the momentum going</small></div>
+        </section>
+
+        <div class="board-heading"><div><h2>Task board</h2><span class="board-caption">Three stages. One clear workflow.</span></div><label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search-input" type="search" placeholder="Search tasks..." aria-label="Search tasks" autocomplete="off" /></label></div>
+        <div class="board" aria-label="Kanban board">
+          <section class="column" aria-label="Backlog tasks" data-status="backlog">
+            <div class="column-header"><span class="column-dot slate"></span><h3>Backlog</h3><span class="column-count" id="backlog-column-count">0</span><span class="column-symbol">⋯</span></div>
+            <div class="task-list" id="backlog-list"></div>
+            <button class="add-inline" data-new-task="true">＋ &nbsp; Add a task</button>
+          </section>
+          <section class="column" aria-label="In progress tasks" data-status="progress">
+            <div class="column-header"><span class="column-dot blue"></span><h3>In progress</h3><span class="column-count" id="progress-column-count">0</span><span class="column-symbol">⋯</span></div>
+            <div class="task-list" id="progress-list"></div>
+          </section>
+          <section class="column" aria-label="Done tasks" data-status="done">
+            <div class="column-header"><span class="column-dot green"></span><h3>Done</h3><span class="column-count" id="done-column-count">0</span><span class="column-symbol">⋯</span></div>
+            <div class="task-list" id="done-list"></div>
+          </section>
+        </div>
+        <footer class="footer"><span><span class="footer-dot"></span> API connected · Node.js · No external dependencies</span><span>Designed for multi-agent coordination testing</span></footer>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="task-dialog" aria-labelledby="dialog-title">
+    <form id="task-form">
+      <div class="dialog-top"><div><div class="eyebrow">NEW WORK ITEM</div><h2 id="dialog-title">Create a task</h2></div><button type="button" class="close-button" id="close-dialog" aria-label="Close dialog">×</button></div>
+      <label>Task title <span aria-hidden="true">*</span><input name="title" maxlength="80" placeholder="e.g. Build dashboard API" required autofocus /></label>
+      <label>Description<textarea name="description" maxlength="240" rows="3" placeholder="Add context for the team..."></textarea></label>
+      <div class="form-grid"><label>Owner<input name="owner" maxlength="32" placeholder="e.g. Codex" /></label><label>Priority<select name="priority"><option value="medium">Medium</option><option value="high">High</option><option value="low">Low</option></select></label></div>
+      <div class="dialog-actions"><button type="button" class="button-secondary" id="cancel-task">Cancel</button><button type="submit" class="button-primary">Create task</button></div>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "concord-sprint-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dependency-free full-stack task board designed for a Concord MCP multi-agent collaboration demonstration",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test",
+    "check": "node --check server/index.js && node --check server/api.js && node --check public/app.js"
+  },
+  "license": "MIT"
+}
