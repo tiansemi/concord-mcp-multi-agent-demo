@@ -1,6 +1,8 @@
 # Sprint Board — full-stack collaboration demo
 
 A Kanban application prepared for an Entry-Level Full Stack Developer application, demonstrating a JavaScript frontend, a REST API, automated tests, and scoped Claude Code/Codex collaboration through Concord MCP.
+<img width="1907" height="1078" alt="Screenshot 2026-11-08 131431" src="https://github.com/user-attachments/assets/f05a9f1d-021c-418f-a492-d6e62a38b6fa" />
+
 
 ## Installation and stack
 
